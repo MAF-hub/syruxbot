@@ -391,7 +391,39 @@ def process(name,names,owner,bot_token):
     query = update.callback_query
     oel=query.data
     valpo=oel.split("|")
-    if oel=="crearnewiban":
+    if oel=="rules":
+      msg="""
+<-ಠ-> REGLAS <-ಠ->
+
+ಠ----------------------------ಠ-----------------------------ಠ
+1.-> No Jugar Con El Bot.
+
+2.-> No Ventas Ni Intercambios Si No Estan Autorizados.
+
+3.-> No Se Permiten Links Externos Sin Previa Autorizacion, Seran Advertidos.
+
+4.-> No Nos Hacemos Responsables De Estafas Por Incumplir La Segunda Regla.
+
+5.-> Esta Prohibido Enviar Contenido Sexual De Cualquier Tipo Al Grupo, Ya Sea Pornografía, Hentai U Otros.
+
+6.-> No Recomendar A Personas Fuera Del Staff Como Vendedores Ley Y Dicho Esto Seran Baneados.
+
+7.-> Esta Limitado El Uso De Stickers Y Mayusculas, Sera Tomado Como Flood Y Procederemos A Mutear.
+
+8.-> Prohibido Exigirle A Los Admins O Moderadores Que Realicen Giveaways. No Es Su Obligacion Sea Paciente.
+
+9.-> No Spam Ni Flood, Sera Muteado Sin Aviso Por Un Lapso De 72horas. Al Segundo Incumplimiento De Dicha Regla Se Les Dara Ban.
+
+10.-> Los Administradores Y Moderadores Tienen Completamente Prohibido El Abuso De Sus Permisos, Si Incumple Dicha Regla Sera Removido De Su Puesto.
+
+11.-> Cualquier Aportacion Sera Recibida Con Previa Aprobacion De Algun Admin O Mod Para Evitar Ser Un Grupo Mas Del Monton Que Solo Pasa Carbon Y Contenido Fake.
+
+12.-> Si Intenta Comunicarse Con Algun Administrador O Moderador Y Este No Responde Al Momento Repito Nuevamente, Sea Paciente Puesto Que Todos Tenemos Una Vida Fuera De Telegram.
+
+¡Diviertanse Somos Una Familia! ;)
+ಠ----------------------------ಠ-----------------------------ಠ"""
+      query.edit_message_text(text=msg)
+    elif oel=="crearnewiban":
       keyboard=[[InlineKeyboardButton("CREAR", callback_data='crearnewiban')]]
       reply_markup = InlineKeyboardMarkup(keyboard)
       ibba=IbanNew()
@@ -1452,14 +1484,16 @@ def process(name,names,owner,bot_token):
       msg="⚠️ el pene de {} es de {}cm 😳".format(persona,valor)
     update.message.reply_text(msg)
   def WelcomeMSG(update,context):
+    keyboard=[[InlineKeyboardButton("REGLAS", callback_data='rules')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
     bot=context.bot
     chatD=update.message.chat_id
     updateMSG=getattr(update,"message",None)
     for user in updateMSG.new_chat_members:
-      username=user.username
+      username=user.first_name
     msg="""
-BIENVENIDO MI PANA @{}""".format(username)
-    bot.sendMessage(text=msg,chat_id=chatD)
+BIENVENIDO MI PANA {}""".format(username)
+    update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
   def simp(update,context):
     user=update.message.from_user.username
     bot=context.bot
