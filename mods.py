@@ -390,7 +390,62 @@ def process(name,names,owner,bot_token):
   def button(update: Update, context: CallbackContext):
     query = update.callback_query
     oel=query.data
-    if oel=="infobot":
+    valpo=oel.split("|")
+    if valpo[0]=="k":
+            cc1=valpo[1]
+            keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}'.format(valpo[1]))]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            extras=[]
+            obj = Tools()
+            ass=[]
+            ass.append(cc1)
+            l=obj.ccgenFromList(ass)
+            for a in l:
+              cc1=str(a[0])+str(a[1])+str(a[2])+str(a[3])+str(a[4])+str(a[5])+str(a[6])+str(a[7])+str(a[8])+str(a[9])+str(a[10])+str(a[11])+str(a[12])+str(a[13])+str(a[14])+str(a[15])
+              mult1=int(cc1[0])*int(cc1[8])
+              mult2=int(cc1[1])*int(cc1[9])
+              mult3=int(cc1[2])*int(cc1[10])
+              mult4=int(cc1[3])*int(cc1[11])
+              mult5=int(cc1[4])*int(cc1[12])
+              mult6=int(cc1[5])*int(cc1[13])
+              mult7=int(cc1[6])*int(cc1[14])
+              mult8=int(cc1[7])*int(cc1[15])
+              cc2=str(cc1[0])+str(cc1[1])+str(cc1[2])+str(cc1[3])+str(cc1[4])+str(cc1[5])+str(cc1[6])+str(cc1[7])+str(int(mult1))+str(int(mult2))+str(int(mult3))+str(int(mult4))+str(int(mult5))+str(int(mult6))+str(int(mult7))+str(int(mult8))
+              a=0
+              osd=list()
+              for i in cc1:
+                if i == cc2[a]:
+                  osd.append(i)
+                else:
+                  osd.append("x")
+                a+=1
+              res_two=str(osd[0])+str(osd[1])+str(osd[2])+str(osd[3])+str(osd[4])+str(osd[5])+str(osd[6])+str(osd[7])+str(osd[8])+str(osd[9])+str(osd[10])+str(osd[11])+str(osd[12])+str(osd[13])+str(osd[14])+str(osd[15])
+              extras.append(res_two)
+            aa=str(extras[0])
+            bb=str(extras[1])
+            cc=str(extras[2])
+            dd=str(extras[3])
+            ee=str(extras[4])
+            ff=str(extras[5])
+            gg=str(extras[6])
+            hh=str(extras[7])
+            ii=str(extras[8])
+            jj=str(extras[9])
+            msg="""
+<b>EXTRAPOLADOS BY LUHN LISTOS :</b>
+
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+            query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
+    elif oel=="infobot":
       keyboard=[[InlineKeyboardButton("help", callback_data='empezar')],
       [InlineKeyboardButton("menu principal", callback_data='volver')]]
       reply_markup = InlineKeyboardMarkup(keyboard)
@@ -453,7 +508,7 @@ def process(name,names,owner,bot_token):
         bin = str(bin)
         bin = re.sub('([a-zA-Z]){1,}', '', bin)
         try:
-          keyboard=[[InlineKeyboardButton("CREAR", callback_data='crearnewbin')]]
+          keyboard=[[InlineKeyboardButton("VOLVER A CREAR", callback_data='crearnewbin')]]
           reply_markup = InlineKeyboardMarkup(keyboard)
           unks = 0
           url='https://lookup.binlist.net/'+str(bin)
@@ -521,9 +576,15 @@ def process(name,names,owner,bot_token):
 """.format(bin,emote,marca,tipo,brnd,bank_name,pais,el_alpha,tipo_moneda,bank_url)
           query.edit_message_text(text=ibba_2,reply_markup=reply_markup,parse_mode="HTML")
         except:
-          keyboard=[[InlineKeyboardButton("CREAR", callback_data='crearnewbin')]]
+          keyboard=[[InlineKeyboardButton("VOLVER CREAR", callback_data='crearnewbin')]]
           reply_markup = InlineKeyboardMarkup(keyboard)
-          ibba_2="<b>Mala suerte, reintenta de nuevo :)</b>"
+          ibba=[
+            "mala suerte ,intenta de nuevo :)",
+            "recuerda que dandole al boton vuelve a crear",
+            "suerte para la proxima",
+            "ehh bro,parece que no lo pude hacer",
+            "uwur quizá en la proxima será"]
+          ibba_2=choice(ibba)
           query.edit_message_text(text=ibba_2,reply_markup=reply_markup,parse_mode="HTML")
     else:
       vale=oel.strip("']").strip("['")
@@ -774,8 +835,6 @@ def process(name,names,owner,bot_token):
       msg="<b>RECUERDE QUE EL COMANDO VA SEGUIDO DE UN BIN {} </b>".format(user)
       update.message.reply_text(msg,parse_mode='HTML')
   def bincheck(update,context):
-    keyboard=[[InlineKeyboardButton("NEW BIN", callback_data='bincheck')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
     user = update.message.from_user.username
     args=context.args
     if len(args)==1:
@@ -859,12 +918,13 @@ def process(name,names,owner,bot_token):
 ಠ-> URL Banco : {}
 
 ಠ-> BY : @{} """.format(bin,emote,marca,tipo,brnd,bank_name,pais,el_alpha,tipo_moneda,bank_url,user)
+          update.message.reply_text(ibba_2,parse_mode='HTML')     
         except:
           ibba_2="BIN INVALIDO"
-        update.message.reply_text(ibba_2,reply_markup=reply_markup,parse_mode='HTML')
+          update.message.reply_text(ibba_2,reply_markup=reply_markup,parse_mode='HTML')
     else:
       ibba_2="{} LO QUE ME PIDIO ES INVALIDO".format(user)
-    update.message.reply_text(ibba_2,parse_mode='HTML')
+      update.message.reply_text(ibba_2,parse_mode='HTML')
   def find(update,context):
     user = update.message.from_user.username
     args=context.args
@@ -994,7 +1054,10 @@ def process(name,names,owner,bot_token):
 *SEGUNDO RESULTADO :* `{}`
 
 *BY :* `{}`""".format(res_one,res_two,user)
+            update.message.reply_text(msg,parse_mode='MarkdownV2')
           else:
+            keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}'.format(args[0]))]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
             extras=[]
             obj = Tools()
             ass=[]
@@ -1032,20 +1095,19 @@ def process(name,names,owner,bot_token):
             ii=str(extras[8])
             jj=str(extras[9])
             msg="""
-*EXTRAPOLADOS BY LUHN LISTOS :*
+<b>EXTRAPOLADOS BY LUHN LISTOS :</b>
 
-`{}`
-`{}`
-`{}`
-`{}`
-`{}`
-`{}`
-`{}`
-`{}`
-`{}`
-`{}`
-
-*BY : *`{}`""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj,user)
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>
+ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj,user)
+            update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
         elif len(args[0])==15:
           cc=str(args[0])
           print(cc)
@@ -1095,6 +1157,7 @@ def process(name,names,owner,bot_token):
           update.message.reply_text(msg,parse_mode='MarkdownV2')
         else:
           msg="*{} RECUERDE QUE DEBE DE METER UNA CC VALIDA*".format(user)
+          update.message.reply_text(msg,parse_mode='MarkdownV2')
       elif len(args)==2:
         cc=str(args[0])
         bins=list()
@@ -1171,6 +1234,7 @@ def process(name,names,owner,bot_token):
 *CUARTO RESULTADO : *`{}`
 
 *BY : *`{}`""".format(msg_1,msg_2,msg_3,msg_4,user)
+          update.message.reply_text(msg,parse_mode='MarkdownV2')
         elif cc.isdigit()==True:
           if len(cc)==16:
             if binf.isdigit()==False:
@@ -1198,20 +1262,26 @@ def process(name,names,owner,bot_token):
 `{}`
 
 *BY :* `{}`""".format(res_1,res_2,user)
+              update.message.reply_text(msg,parse_mode='MarkdownV2')
         elif len(args[0])==14 and len(args[1])==14:
           msg="`{}` *DISCULPE ,AÚN ESTÁ EN DE DESARROLLO*".format(user)
+          update.message.reply_text(msg,parse_mode='MarkdownV2')
         else:
           msg="`{}` *RECUERDA QUE DEBES DE INGRESAR CC'S VALIDAS*".format(user)
+          update.message.reply_text(msg,parse_mode='MarkdownV2')
       elif len(args)==3:
         if len(args[0])==16 and len(args[1])==16 and len(args[2])==16:
           msg="`{}` *DISCULPE ,AÚN ESTÁ EN DE DESARROLLO*".format(user)
+          update.message.reply_text(msg,parse_mode='MarkdownV2')
         else:
           msg="`{}` RECUERDA QUE DEBES DE INGRESAR CC'S VALIDAS".format(user)
+          update.message.reply_text(msg,parse_mode='MarkdownV2')
       elif len(args) > 3:
         msg="`{}` *CANTIDAD NO VALIDA*".format(user)
+        update.message.reply_text(msg,parse_mode='MarkdownV2')
     else:
       msg="`{}` *Debes usar el comando acompañado de una o dos cc's, lives o bins generados*".format(user)
-    update.message.reply_text(msg,parse_mode='MarkdownV2')
+      update.message.reply_text(msg,parse_mode='MarkdownV2')
   def info(update,context):
   	user = update.message.from_user.username
   	first_name=update.message.from_user.first_name
