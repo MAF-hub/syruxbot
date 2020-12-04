@@ -391,7 +391,15 @@ def process(name,names,owner,bot_token):
     query = update.callback_query
     oel=query.data
     valpo=oel.split("|")
-    if valpo[0]=="k":
+    if oel=="crearnewiban":
+      keyboard=[[InlineKeyboardButton("CREAR", callback_data='crearnewiban')]]
+      reply_markup = InlineKeyboardMarkup(keyboard)
+      ibba=IbanNew()
+      ibba_1=ibba.IbanX()
+      ibba_3=ibba.msg
+      ibba_2="""{}""".format(ibba_3,user)
+      query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
+    elif valpo[0]=="k":
             cc1=valpo[1]
             keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}'.format(valpo[1]))]]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1400,16 +1408,16 @@ def process(name,names,owner,bot_token):
     user=update.message.from_user.username
     args=context.args
     if len(args)==0:
+      keyboard=[[InlineKeyboardButton("CREAR", callback_data='crearnewiban')]]
+      reply_markup = InlineKeyboardMarkup(keyboard)
       ibba=IbanNew()
       ibba_1=ibba.IbanX()
       ibba_3=ibba.msg
-      ibba_2="""
-{}
-
-BY : <b>@{}</b>""".format(ibba_3,user)
+      ibba_2="""{}""".format(ibba_3,user)
+      update.message.reply_text(ibba_2,reply_markup=reply_markup,parse_mode='HTML')
     else:
       ibba_2="LO QUE ME PIDIO ES INVALIDO"
-    update.message.reply_text(ibba_2,parse_mode="HTML")
+      update.message.reply_text(ibba_2,parse_mode="HTML")
   def help(update,context):
     user = update.message.from_user.username
     msg="""
