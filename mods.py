@@ -397,7 +397,7 @@ def process(name,names,owner,bot_token):
       ibba=IbanNew()
       ibba_1=ibba.IbanX()
       ibba_3=ibba.msg
-      ibba_2="""{}""".format(ibba_3,user)
+      ibba_2="""{}""".format(ibba_3)
       query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
     elif valpo[0]=="k":
             cc1=valpo[1]
@@ -1540,6 +1540,8 @@ BIENVENIDO MI PANA @{}""".format(username)
 <pre>pre-formatted fixed-width code block</pre>
 <pre><code class="language-python">pre-formatted fixed-width code block written in the Python programming language</code></pre>"""
     update.message.reply_text(msg,parse_mode="HTML")
+  def dork(update,context):
+    pass
   dispatcher.add_handler(CommandHandler("insultar_a",insultar_a))
   dispatcher.add_handler(CommandHandler("simp",simp))
   dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,WelcomeMSG))
