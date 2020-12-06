@@ -7,7 +7,7 @@ import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext ,Filters ,MessageHandler
-import os ,sys ,math ,json ,bs4 ,datetime ,requests ,re ,socket ,pickle
+import os ,sys ,math ,json ,bs4 ,datetime ,requests ,re ,socket ,pickle ,platform
 from random import *
 from io import *
 from time   import sleep
@@ -16,7 +16,7 @@ from random import randint
 def process(name,names,owner,bot_token):
   updater = Updater(token=bot_token,use_context=True)
   dispatcher = updater.dispatcher
-  os.system("clear")
+  os.system("cls")
   print("""
 
   --------« CONSOLE OF THE BOT »--------------
@@ -391,39 +391,7 @@ def process(name,names,owner,bot_token):
     query = update.callback_query
     oel=query.data
     valpo=oel.split("|")
-    if oel=="rules":
-      msg="""
-<-ಠ-> REGLAS <-ಠ->
-
-ಠ----------------------------ಠ-----------------------------ಠ
-1.-> No Jugar Con El Bot.
-
-2.-> No Ventas Ni Intercambios Si No Estan Autorizados.
-
-3.-> No Se Permiten Links Externos Sin Previa Autorizacion, Seran Advertidos.
-
-4.-> No Nos Hacemos Responsables De Estafas Por Incumplir La Segunda Regla.
-
-5.-> Esta Prohibido Enviar Contenido Sexual De Cualquier Tipo Al Grupo, Ya Sea Pornografía, Hentai U Otros.
-
-6.-> No Recomendar A Personas Fuera Del Staff Como Vendedores Ley Y Dicho Esto Seran Baneados.
-
-7.-> Esta Limitado El Uso De Stickers Y Mayusculas, Sera Tomado Como Flood Y Procederemos A Mutear.
-
-8.-> Prohibido Exigirle A Los Admins O Moderadores Que Realicen Giveaways. No Es Su Obligacion Sea Paciente.
-
-9.-> No Spam Ni Flood, Sera Muteado Sin Aviso Por Un Lapso De 72horas. Al Segundo Incumplimiento De Dicha Regla Se Les Dara Ban.
-
-10.-> Los Administradores Y Moderadores Tienen Completamente Prohibido El Abuso De Sus Permisos, Si Incumple Dicha Regla Sera Removido De Su Puesto.
-
-11.-> Cualquier Aportacion Sera Recibida Con Previa Aprobacion De Algun Admin O Mod Para Evitar Ser Un Grupo Mas Del Monton Que Solo Pasa Carbon Y Contenido Fake.
-
-12.-> Si Intenta Comunicarse Con Algun Administrador O Moderador Y Este No Responde Al Momento Repito Nuevamente, Sea Paciente Puesto Que Todos Tenemos Una Vida Fuera De Telegram.
-
-¡Diviertanse Somos Una Familia! ;)
-ಠ----------------------------ಠ-----------------------------ಠ"""
-      query.edit_message_text(text=msg)
-    elif oel=="crearnewiban":
+    if oel=="crearnewiban":
       keyboard=[[InlineKeyboardButton("CREAR", callback_data='crearnewiban')]]
       reply_markup = InlineKeyboardMarkup(keyboard)
       ibba=IbanNew()
@@ -433,7 +401,8 @@ def process(name,names,owner,bot_token):
       query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
     elif valpo[0]=="k":
             cc1=valpo[1]
-            keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}'.format(valpo[1]))]]
+            user=valpo[2]
+            keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}|{}'.format(valpo[1],user))]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             extras=[]
             obj = Tools()
@@ -483,12 +452,24 @@ def process(name,names,owner,bot_token):
 ಠ-> <code>{}</code>
 ಠ-> <code>{}</code>
 ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+ಠ-> <code>{}</code>
+
+ಠ-> BY: <b>{}</b>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj,user)
             query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
     elif oel=="infobot":
       keyboard=[[InlineKeyboardButton("help", callback_data='empezar')],
       [InlineKeyboardButton("menu principal", callback_data='volver')]]
       reply_markup = InlineKeyboardMarkup(keyboard)
+      sistema = platform.system()
+      url="https://api.ipify.org?format=json"
+      start=datetime.datetime.now()
+      res=requests.get(url=url,timeout=5)
+      if res.status_code==200:
+        end=datetime.datetime.now()
+        raw_speed=str(end-start).split('.')[1]
+        speed_int=round(int(raw_speed),2)
+        speed=round(speed_int/1000)
+        speed=str(speed)+"ms"
       msg="""
 <b>NOMBRE DEL BOT : </b><u><i>{}</i></u>
 
@@ -496,7 +477,13 @@ def process(name,names,owner,bot_token):
 
 <b>Sexo :</b> <u>FEMENINO 7W7</u>
 
-<b>OWNER : </b><u><i>{}</i></u>""".format(names,owner)
+<b>OWNER : </b><u><i>{}</i></u>
+
+<b>SYSTEM : </b><u><i>{}</i></u>
+
+<b>SPEEDTEST : </b><u><i>{}</i></u>
+
+<b>GRACIAS POR USAR EL BOT</b>""".format(names,owner,sistema,speed)
       query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
     elif oel=="volver":
       keyboard=[[InlineKeyboardButton("help", callback_data='empezar')],
@@ -633,8 +620,6 @@ def process(name,names,owner,bot_token):
       Loxd=vale.split("|")
       if len(msg) > 0:
         if len(Loxd)==1:
-          keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(msg))]]
-          reply_markup = InlineKeyboardMarkup(keyboard)
           binf = msg
           obj = Tools()
           a=obj.ccgenFromList(binf)
@@ -648,17 +633,11 @@ def process(name,names,owner,bot_token):
           hh=str(a[7])
           ii=str(a[8])
           jj=str(a[9])
-          msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+          a=[aa,bb,cc,dd,ee,ff,gg,hh,ii,jj]
+          keyboard=[
+          [InlineKeyboardButton("GENERAR", callback_data='{}'.format(msg))]]
+          reply_markup = InlineKeyboardMarkup(keyboard)
+          msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
           query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
         if len(Loxd)==2:
           keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(msg))]]
@@ -667,27 +646,17 @@ def process(name,names,owner,bot_token):
           binf.append(Loxd[0])
           obj = Tools()
           a=obj.ccgenFromList(binf)
-          aa=str(a[0][0])+str(a[0][1])+str(a[0][2])+str(a[0][3])+str(a[0][4])+str(a[0][5])+str(a[0][6])+str(a[0][7])+str(a[0][8])+str(a[0][9])+str(a[0][10])+str(a[0][11])+str(a[0][12])+str(a[0][13])+str(a[0][14])+str(a[0][15])+"|"+str(Loxd[1])+"|"+str(a[0][20])+str(a[0][21])+"|"+str(a[0][23])+str(a[0][24])+str(a[0][25])
-          bb=str(a[1][0])+str(a[1][1])+str(a[1][2])+str(a[1][3])+str(a[1][4])+str(a[1][5])+str(a[1][6])+str(a[1][7])+str(a[1][8])+str(a[1][9])+str(a[1][10])+str(a[1][11])+str(a[1][12])+str(a[1][13])+str(a[1][14])+str(a[1][15])+"|"+str(Loxd[1])+"|"+str(a[1][20])+str(a[1][21])+"|"+str(a[1][23])+str(a[1][24])+str(a[1][25])
-          cc=str(a[2][0])+str(a[2][1])+str(a[2][2])+str(a[2][3])+str(a[2][4])+str(a[2][5])+str(a[2][6])+str(a[2][7])+str(a[2][8])+str(a[2][9])+str(a[2][10])+str(a[2][11])+str(a[2][12])+str(a[2][13])+str(a[2][14])+str(a[2][15])+"|"+str(Loxd[1])+"|"+str(a[2][20])+str(a[2][21])+"|"+str(a[2][23])+str(a[2][24])+str(a[2][25])
-          dd=str(a[3][0])+str(a[3][1])+str(a[3][2])+str(a[3][3])+str(a[3][4])+str(a[3][5])+str(a[3][6])+str(a[3][7])+str(a[3][8])+str(a[3][9])+str(a[3][10])+str(a[3][11])+str(a[3][12])+str(a[3][13])+str(a[3][14])+str(a[3][15])+"|"+str(Loxd[1])+"|"+str(a[3][20])+str(a[3][21])+"|"+str(a[3][23])+str(a[3][24])+str(a[3][25])
-          ee=str(a[4][0])+str(a[4][1])+str(a[4][2])+str(a[4][3])+str(a[4][4])+str(a[4][5])+str(a[4][6])+str(a[4][7])+str(a[4][8])+str(a[4][9])+str(a[4][10])+str(a[4][11])+str(a[4][12])+str(a[4][13])+str(a[4][14])+str(a[4][15])+"|"+str(Loxd[1])+"|"+str(a[4][20])+str(a[4][21])+"|"+str(a[4][23])+str(a[4][24])+str(a[4][25])
-          ff=str(a[5][0])+str(a[5][1])+str(a[5][2])+str(a[5][3])+str(a[5][4])+str(a[5][5])+str(a[5][6])+str(a[5][7])+str(a[5][8])+str(a[5][9])+str(a[5][10])+str(a[5][11])+str(a[5][12])+str(a[5][13])+str(a[5][14])+str(a[5][15])+"|"+str(Loxd[1])+"|"+str(a[5][20])+str(a[5][21])+"|"+str(a[5][23])+str(a[5][24])+str(a[5][25])
-          gg=str(a[6][0])+str(a[6][1])+str(a[6][2])+str(a[6][3])+str(a[6][4])+str(a[6][5])+str(a[6][6])+str(a[6][7])+str(a[6][8])+str(a[6][9])+str(a[6][10])+str(a[6][11])+str(a[6][12])+str(a[6][13])+str(a[6][14])+str(a[6][15])+"|"+str(Loxd[1])+"|"+str(a[6][20])+str(a[6][21])+"|"+str(a[6][23])+str(a[6][24])+str(a[6][25])
-          hh=str(a[7][0])+str(a[7][1])+str(a[7][2])+str(a[7][3])+str(a[7][4])+str(a[7][5])+str(a[7][6])+str(a[7][7])+str(a[7][8])+str(a[7][9])+str(a[7][10])+str(a[7][11])+str(a[7][12])+str(a[7][13])+str(a[7][14])+str(a[7][15])+"|"+str(Loxd[1])+"|"+str(a[7][20])+str(a[7][21])+"|"+str(a[7][23])+str(a[7][24])+str(a[7][25])
-          ii=str(a[8][0])+str(a[8][1])+str(a[8][2])+str(a[8][3])+str(a[8][4])+str(a[8][5])+str(a[8][6])+str(a[8][7])+str(a[8][8])+str(a[8][9])+str(a[8][10])+str(a[8][11])+str(a[8][12])+str(a[8][13])+str(a[8][14])+str(a[8][15])+"|"+str(Loxd[1])+"|"+str(a[8][20])+str(a[8][21])+"|"+str(a[8][23])+str(a[8][24])+str(a[8][25])
-          jj=str(a[9][0])+str(a[9][1])+str(a[9][2])+str(a[9][3])+str(a[9][4])+str(a[9][5])+str(a[9][6])+str(a[9][7])+str(a[9][8])+str(a[9][9])+str(a[9][10])+str(a[9][11])+str(a[9][12])+str(a[9][13])+str(a[9][14])+str(a[9][15])+"|"+str(Loxd[1])+"|"+str(a[9][20])+str(a[9][21])+"|"+str(a[9][23])+str(a[9][24])+str(a[9][25])
-          msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+          aa=str(a[0].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[0].split("|")[1])+"|"+str(a[0].split("|")[2])
+          bb=str(a[1].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[1].split("|")[1])+"|"+str(a[1].split("|")[2])
+          cc=str(a[2].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[2].split("|")[1])+"|"+str(a[2].split("|")[2])
+          dd=str(a[3].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[3].split("|")[1])+"|"+str(a[3].split("|")[2])
+          ee=str(a[4].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[4].split("|")[1])+"|"+str(a[4].split("|")[2])
+          ff=str(a[5].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[5].split("|")[1])+"|"+str(a[5].split("|")[2])
+          gg=str(a[6].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[6].split("|")[1])+"|"+str(a[6].split("|")[2])
+          hh=str(a[7].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[7].split("|")[1])+"|"+str(a[7].split("|")[2])
+          ii=str(a[8].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[8].split("|")[1])+"|"+str(a[8].split("|")[2])
+          jj=str(a[9].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[9].split("|")[1])+"|"+str(a[9].split("|")[2])
+          msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
           query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
         elif len(Loxd)==3:
           keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(msg))]]
@@ -696,27 +665,17 @@ def process(name,names,owner,bot_token):
           binf.append(Loxd[0])
           obj = Tools()
           a=obj.ccgenFromList(binf)
-          aa=str(a[0][0])+str(a[0][1])+str(a[0][2])+str(a[0][3])+str(a[0][4])+str(a[0][5])+str(a[0][6])+str(a[0][7])+str(a[0][8])+str(a[0][9])+str(a[0][10])+str(a[0][11])+str(a[0][12])+str(a[0][13])+str(a[0][14])+str(a[0][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[0][23])+str(a[0][24])+str(a[0][25])
-          bb=str(a[1][0])+str(a[1][1])+str(a[1][2])+str(a[1][3])+str(a[1][4])+str(a[1][5])+str(a[1][6])+str(a[1][7])+str(a[1][8])+str(a[1][9])+str(a[1][10])+str(a[1][11])+str(a[1][12])+str(a[1][13])+str(a[1][14])+str(a[1][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[1][23])+str(a[1][24])+str(a[1][25])
-          cc=str(a[2][0])+str(a[2][1])+str(a[2][2])+str(a[2][3])+str(a[2][4])+str(a[2][5])+str(a[2][6])+str(a[2][7])+str(a[2][8])+str(a[2][9])+str(a[2][10])+str(a[2][11])+str(a[2][12])+str(a[2][13])+str(a[2][14])+str(a[2][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[2][23])+str(a[2][24])+str(a[2][25])
-          dd=str(a[3][0])+str(a[3][1])+str(a[3][2])+str(a[3][3])+str(a[3][4])+str(a[3][5])+str(a[3][6])+str(a[3][7])+str(a[3][8])+str(a[3][9])+str(a[3][10])+str(a[3][11])+str(a[3][12])+str(a[3][13])+str(a[3][14])+str(a[3][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[3][23])+str(a[3][24])+str(a[3][25])
-          ee=str(a[4][0])+str(a[4][1])+str(a[4][2])+str(a[4][3])+str(a[4][4])+str(a[4][5])+str(a[4][6])+str(a[4][7])+str(a[4][8])+str(a[4][9])+str(a[4][10])+str(a[4][11])+str(a[4][12])+str(a[4][13])+str(a[4][14])+str(a[4][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[4][23])+str(a[4][24])+str(a[4][25])
-          ff=str(a[5][0])+str(a[5][1])+str(a[5][2])+str(a[5][3])+str(a[5][4])+str(a[5][5])+str(a[5][6])+str(a[5][7])+str(a[5][8])+str(a[5][9])+str(a[5][10])+str(a[5][11])+str(a[5][12])+str(a[5][13])+str(a[5][14])+str(a[5][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[5][23])+str(a[5][24])+str(a[5][25])
-          gg=str(a[6][0])+str(a[6][1])+str(a[6][2])+str(a[6][3])+str(a[6][4])+str(a[6][5])+str(a[6][6])+str(a[6][7])+str(a[6][8])+str(a[6][9])+str(a[6][10])+str(a[6][11])+str(a[6][12])+str(a[6][13])+str(a[6][14])+str(a[6][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[6][23])+str(a[6][24])+str(a[6][25])
-          hh=str(a[7][0])+str(a[7][1])+str(a[7][2])+str(a[7][3])+str(a[7][4])+str(a[7][5])+str(a[7][6])+str(a[7][7])+str(a[7][8])+str(a[7][9])+str(a[7][10])+str(a[7][11])+str(a[7][12])+str(a[7][13])+str(a[7][14])+str(a[7][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[7][23])+str(a[7][24])+str(a[7][25])
-          ii=str(a[8][0])+str(a[8][1])+str(a[8][2])+str(a[8][3])+str(a[8][4])+str(a[8][5])+str(a[8][6])+str(a[8][7])+str(a[8][8])+str(a[8][9])+str(a[8][10])+str(a[8][11])+str(a[8][12])+str(a[8][13])+str(a[8][14])+str(a[8][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[8][23])+str(a[8][24])+str(a[8][25])
-          jj=str(a[9][0])+str(a[9][1])+str(a[9][2])+str(a[9][3])+str(a[9][4])+str(a[9][5])+str(a[9][6])+str(a[9][7])+str(a[9][8])+str(a[9][9])+str(a[9][10])+str(a[9][11])+str(a[9][12])+str(a[9][13])+str(a[9][14])+str(a[9][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[9][23])+str(a[9][24])+str(a[9][25])
-          msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+          aa=str(a[0].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[0].split("|")[2])
+          bb=str(a[1].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[1].split("|")[2])
+          cc=str(a[2].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[2].split("|")[2])
+          dd=str(a[3].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[3].split("|")[2])
+          ee=str(a[4].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[4].split("|")[2])
+          ff=str(a[5].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[5].split("|")[2])
+          gg=str(a[6].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[6].split("|")[2])
+          hh=str(a[7].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[7].split("|")[2])
+          ii=str(a[8].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[8].split("|")[2])
+          jj=str(a[9].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[9].split("|")[2])
+          msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
           query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
         elif len(Loxd)==4:
           keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(msg))]]
@@ -725,27 +684,17 @@ def process(name,names,owner,bot_token):
           binf.append(Loxd[0])
           obj = Tools()
           a=obj.ccgenFromList(binf)
-          aa=str(a[0][0])+str(a[0][1])+str(a[0][2])+str(a[0][3])+str(a[0][4])+str(a[0][5])+str(a[0][6])+str(a[0][7])+str(a[0][8])+str(a[0][9])+str(a[0][10])+str(a[0][11])+str(a[0][12])+str(a[0][13])+str(a[0][14])+str(a[0][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          bb=str(a[1][0])+str(a[1][1])+str(a[1][2])+str(a[1][3])+str(a[1][4])+str(a[1][5])+str(a[1][6])+str(a[1][7])+str(a[1][8])+str(a[1][9])+str(a[1][10])+str(a[1][11])+str(a[1][12])+str(a[1][13])+str(a[1][14])+str(a[1][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          cc=str(a[2][0])+str(a[2][1])+str(a[2][2])+str(a[2][3])+str(a[2][4])+str(a[2][5])+str(a[2][6])+str(a[2][7])+str(a[2][8])+str(a[2][9])+str(a[2][10])+str(a[2][11])+str(a[2][12])+str(a[2][13])+str(a[2][14])+str(a[2][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          dd=str(a[3][0])+str(a[3][1])+str(a[3][2])+str(a[3][3])+str(a[3][4])+str(a[3][5])+str(a[3][6])+str(a[3][7])+str(a[3][8])+str(a[3][9])+str(a[3][10])+str(a[3][11])+str(a[3][12])+str(a[3][13])+str(a[3][14])+str(a[3][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          ee=str(a[4][0])+str(a[4][1])+str(a[4][2])+str(a[4][3])+str(a[4][4])+str(a[4][5])+str(a[4][6])+str(a[4][7])+str(a[4][8])+str(a[4][9])+str(a[4][10])+str(a[4][11])+str(a[4][12])+str(a[4][13])+str(a[4][14])+str(a[4][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          ff=str(a[5][0])+str(a[5][1])+str(a[5][2])+str(a[5][3])+str(a[5][4])+str(a[5][5])+str(a[5][6])+str(a[5][7])+str(a[5][8])+str(a[5][9])+str(a[5][10])+str(a[5][11])+str(a[5][12])+str(a[5][13])+str(a[5][14])+str(a[5][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          gg=str(a[6][0])+str(a[6][1])+str(a[6][2])+str(a[6][3])+str(a[6][4])+str(a[6][5])+str(a[6][6])+str(a[6][7])+str(a[6][8])+str(a[6][9])+str(a[6][10])+str(a[6][11])+str(a[6][12])+str(a[6][13])+str(a[6][14])+str(a[6][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          hh=str(a[7][0])+str(a[7][1])+str(a[7][2])+str(a[7][3])+str(a[7][4])+str(a[7][5])+str(a[7][6])+str(a[7][7])+str(a[7][8])+str(a[7][9])+str(a[7][10])+str(a[7][11])+str(a[7][12])+str(a[7][13])+str(a[7][14])+str(a[7][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          ii=str(a[8][0])+str(a[8][1])+str(a[8][2])+str(a[8][3])+str(a[8][4])+str(a[8][5])+str(a[8][6])+str(a[8][7])+str(a[8][8])+str(a[8][9])+str(a[8][10])+str(a[8][11])+str(a[8][12])+str(a[8][13])+str(a[8][14])+str(a[8][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          jj=str(a[9][0])+str(a[9][1])+str(a[9][2])+str(a[9][3])+str(a[9][4])+str(a[9][5])+str(a[9][6])+str(a[9][7])+str(a[9][8])+str(a[9][9])+str(a[9][10])+str(a[9][11])+str(a[9][12])+str(a[9][13])+str(a[9][14])+str(a[9][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-          msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+          aa=str(a[0].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          bb=str(a[1].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          cc=str(a[2].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          dd=str(a[3].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          ee=str(a[4].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          ff=str(a[5].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          gg=str(a[6].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          hh=str(a[7].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          ii=str(a[8].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          jj=str(a[9].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+          msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
           query.edit_message_text(text=msg,reply_markup=reply_markup,parse_mode="HTML")
   def genera(update,context):
     user = update.message.from_user.username
@@ -769,17 +718,7 @@ def process(name,names,owner,bot_token):
         hh=str(a[7])
         ii=str(a[8])
         jj=str(a[9])
-        msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+        msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
         update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
       if len(Loxd)==2:
         keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(args))]]
@@ -788,28 +727,18 @@ def process(name,names,owner,bot_token):
         binf.append(Loxd[0])
         obj = Tools()
         a=obj.ccgenFromList(binf)
-        aa=str(a[0][0])+str(a[0][1])+str(a[0][2])+str(a[0][3])+str(a[0][4])+str(a[0][5])+str(a[0][6])+str(a[0][7])+str(a[0][8])+str(a[0][9])+str(a[0][10])+str(a[0][11])+str(a[0][12])+str(a[0][13])+str(a[0][14])+str(a[0][15])+"|"+str(Loxd[1])+"|"+str(a[0][20])+str(a[0][21])+"|"+str(a[0][23])+str(a[0][24])+str(a[0][25])
-        bb=str(a[1][0])+str(a[1][1])+str(a[1][2])+str(a[1][3])+str(a[1][4])+str(a[1][5])+str(a[1][6])+str(a[1][7])+str(a[1][8])+str(a[1][9])+str(a[1][10])+str(a[1][11])+str(a[1][12])+str(a[1][13])+str(a[1][14])+str(a[1][15])+"|"+str(Loxd[1])+"|"+str(a[1][20])+str(a[1][21])+"|"+str(a[1][23])+str(a[1][24])+str(a[1][25])
-        cc=str(a[2][0])+str(a[2][1])+str(a[2][2])+str(a[2][3])+str(a[2][4])+str(a[2][5])+str(a[2][6])+str(a[2][7])+str(a[2][8])+str(a[2][9])+str(a[2][10])+str(a[2][11])+str(a[2][12])+str(a[2][13])+str(a[2][14])+str(a[2][15])+"|"+str(Loxd[1])+"|"+str(a[2][20])+str(a[2][21])+"|"+str(a[2][23])+str(a[2][24])+str(a[2][25])
-        dd=str(a[3][0])+str(a[3][1])+str(a[3][2])+str(a[3][3])+str(a[3][4])+str(a[3][5])+str(a[3][6])+str(a[3][7])+str(a[3][8])+str(a[3][9])+str(a[3][10])+str(a[3][11])+str(a[3][12])+str(a[3][13])+str(a[3][14])+str(a[3][15])+"|"+str(Loxd[1])+"|"+str(a[3][20])+str(a[3][21])+"|"+str(a[3][23])+str(a[3][24])+str(a[3][25])
-        ee=str(a[4][0])+str(a[4][1])+str(a[4][2])+str(a[4][3])+str(a[4][4])+str(a[4][5])+str(a[4][6])+str(a[4][7])+str(a[4][8])+str(a[4][9])+str(a[4][10])+str(a[4][11])+str(a[4][12])+str(a[4][13])+str(a[4][14])+str(a[4][15])+"|"+str(Loxd[1])+"|"+str(a[4][20])+str(a[4][21])+"|"+str(a[4][23])+str(a[4][24])+str(a[4][25])
-        ff=str(a[5][0])+str(a[5][1])+str(a[5][2])+str(a[5][3])+str(a[5][4])+str(a[5][5])+str(a[5][6])+str(a[5][7])+str(a[5][8])+str(a[5][9])+str(a[5][10])+str(a[5][11])+str(a[5][12])+str(a[5][13])+str(a[5][14])+str(a[5][15])+"|"+str(Loxd[1])+"|"+str(a[5][20])+str(a[5][21])+"|"+str(a[5][23])+str(a[5][24])+str(a[5][25])
-        gg=str(a[6][0])+str(a[6][1])+str(a[6][2])+str(a[6][3])+str(a[6][4])+str(a[6][5])+str(a[6][6])+str(a[6][7])+str(a[6][8])+str(a[6][9])+str(a[6][10])+str(a[6][11])+str(a[6][12])+str(a[6][13])+str(a[6][14])+str(a[6][15])+"|"+str(Loxd[1])+"|"+str(a[6][20])+str(a[6][21])+"|"+str(a[6][23])+str(a[6][24])+str(a[6][25])
-        hh=str(a[7][0])+str(a[7][1])+str(a[7][2])+str(a[7][3])+str(a[7][4])+str(a[7][5])+str(a[7][6])+str(a[7][7])+str(a[7][8])+str(a[7][9])+str(a[7][10])+str(a[7][11])+str(a[7][12])+str(a[7][13])+str(a[7][14])+str(a[7][15])+"|"+str(Loxd[1])+"|"+str(a[7][20])+str(a[7][21])+"|"+str(a[7][23])+str(a[7][24])+str(a[7][25])
-        ii=str(a[8][0])+str(a[8][1])+str(a[8][2])+str(a[8][3])+str(a[8][4])+str(a[8][5])+str(a[8][6])+str(a[8][7])+str(a[8][8])+str(a[8][9])+str(a[8][10])+str(a[8][11])+str(a[8][12])+str(a[8][13])+str(a[8][14])+str(a[8][15])+"|"+str(Loxd[1])+"|"+str(a[8][20])+str(a[8][21])+"|"+str(a[8][23])+str(a[8][24])+str(a[8][25])
-        jj=str(a[9][0])+str(a[9][1])+str(a[9][2])+str(a[9][3])+str(a[9][4])+str(a[9][5])+str(a[9][6])+str(a[9][7])+str(a[9][8])+str(a[9][9])+str(a[9][10])+str(a[9][11])+str(a[9][12])+str(a[9][13])+str(a[9][14])+str(a[9][15])+"|"+str(Loxd[1])+"|"+str(a[9][20])+str(a[9][21])+"|"+str(a[9][23])+str(a[9][24])+str(a[9][25])
-        msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
-        update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
+        aa=str(a[0].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[0].split("|")[1])+"|"+str(a[0].split("|")[2])
+        bb=str(a[1].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[1].split("|")[1])+"|"+str(a[1].split("|")[2])
+        cc=str(a[2].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[2].split("|")[1])+"|"+str(a[2].split("|")[2])
+        dd=str(a[3].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[3].split("|")[1])+"|"+str(a[3].split("|")[2])
+        ee=str(a[4].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[4].split("|")[1])+"|"+str(a[4].split("|")[2])
+        ff=str(a[5].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[5].split("|")[1])+"|"+str(a[5].split("|")[2])
+        gg=str(a[6].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[6].split("|")[1])+"|"+str(a[6].split("|")[2])
+        hh=str(a[7].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[7].split("|")[1])+"|"+str(a[7].split("|")[2])
+        ii=str(a[8].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[8].split("|")[1])+"|"+str(a[8].split("|")[2])
+        jj=str(a[9].split("|")[0])+"|"+str(Loxd[1])+"|"+str(a[9].split("|")[1])+"|"+str(a[9].split("|")[2])
+        msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hha,ii,jj)
+        update.maessage.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
       elif len(Loxd)==3:
         keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(args))]]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -817,27 +746,17 @@ def process(name,names,owner,bot_token):
         binf.append(Loxd[0])
         obj = Tools()
         a=obj.ccgenFromList(binf)
-        aa=str(a[0][0])+str(a[0][1])+str(a[0][2])+str(a[0][3])+str(a[0][4])+str(a[0][5])+str(a[0][6])+str(a[0][7])+str(a[0][8])+str(a[0][9])+str(a[0][10])+str(a[0][11])+str(a[0][12])+str(a[0][13])+str(a[0][14])+str(a[0][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[0][23])+str(a[0][24])+str(a[0][25])
-        bb=str(a[1][0])+str(a[1][1])+str(a[1][2])+str(a[1][3])+str(a[1][4])+str(a[1][5])+str(a[1][6])+str(a[1][7])+str(a[1][8])+str(a[1][9])+str(a[1][10])+str(a[1][11])+str(a[1][12])+str(a[1][13])+str(a[1][14])+str(a[1][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[1][23])+str(a[1][24])+str(a[1][25])
-        cc=str(a[2][0])+str(a[2][1])+str(a[2][2])+str(a[2][3])+str(a[2][4])+str(a[2][5])+str(a[2][6])+str(a[2][7])+str(a[2][8])+str(a[2][9])+str(a[2][10])+str(a[2][11])+str(a[2][12])+str(a[2][13])+str(a[2][14])+str(a[2][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[2][23])+str(a[2][24])+str(a[2][25])
-        dd=str(a[3][0])+str(a[3][1])+str(a[3][2])+str(a[3][3])+str(a[3][4])+str(a[3][5])+str(a[3][6])+str(a[3][7])+str(a[3][8])+str(a[3][9])+str(a[3][10])+str(a[3][11])+str(a[3][12])+str(a[3][13])+str(a[3][14])+str(a[3][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[3][23])+str(a[3][24])+str(a[3][25])
-        ee=str(a[4][0])+str(a[4][1])+str(a[4][2])+str(a[4][3])+str(a[4][4])+str(a[4][5])+str(a[4][6])+str(a[4][7])+str(a[4][8])+str(a[4][9])+str(a[4][10])+str(a[4][11])+str(a[4][12])+str(a[4][13])+str(a[4][14])+str(a[4][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[4][23])+str(a[4][24])+str(a[4][25])
-        ff=str(a[5][0])+str(a[5][1])+str(a[5][2])+str(a[5][3])+str(a[5][4])+str(a[5][5])+str(a[5][6])+str(a[5][7])+str(a[5][8])+str(a[5][9])+str(a[5][10])+str(a[5][11])+str(a[5][12])+str(a[5][13])+str(a[5][14])+str(a[5][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[5][23])+str(a[5][24])+str(a[5][25])
-        gg=str(a[6][0])+str(a[6][1])+str(a[6][2])+str(a[6][3])+str(a[6][4])+str(a[6][5])+str(a[6][6])+str(a[6][7])+str(a[6][8])+str(a[6][9])+str(a[6][10])+str(a[6][11])+str(a[6][12])+str(a[6][13])+str(a[6][14])+str(a[6][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[6][23])+str(a[6][24])+str(a[6][25])
-        hh=str(a[7][0])+str(a[7][1])+str(a[7][2])+str(a[7][3])+str(a[7][4])+str(a[7][5])+str(a[7][6])+str(a[7][7])+str(a[7][8])+str(a[7][9])+str(a[7][10])+str(a[7][11])+str(a[7][12])+str(a[7][13])+str(a[7][14])+str(a[7][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[7][23])+str(a[7][24])+str(a[7][25])
-        ii=str(a[8][0])+str(a[8][1])+str(a[8][2])+str(a[8][3])+str(a[8][4])+str(a[8][5])+str(a[8][6])+str(a[8][7])+str(a[8][8])+str(a[8][9])+str(a[8][10])+str(a[8][11])+str(a[8][12])+str(a[8][13])+str(a[8][14])+str(a[8][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[8][23])+str(a[8][24])+str(a[8][25])
-        jj=str(a[9][0])+str(a[9][1])+str(a[9][2])+str(a[9][3])+str(a[9][4])+str(a[9][5])+str(a[9][6])+str(a[9][7])+str(a[9][8])+str(a[9][9])+str(a[9][10])+str(a[9][11])+str(a[9][12])+str(a[9][13])+str(a[9][14])+str(a[9][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[9][23])+str(a[9][24])+str(a[9][25])
-        msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+        aa=str(a[0].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[0].split("|")[3])
+        bb=str(a[1].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[1].split("|")[3])
+        cc=str(a[2].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[2].split("|")[3])
+        dd=str(a[3].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[3].split("|")[3])
+        ee=str(a[4].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[4].split("|")[3])
+        ff=str(a[5].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[5].split("|")[3])
+        gg=str(a[6].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[6].split("|")[3])
+        hh=str(a[7].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[7].split("|")[3])
+        ii=str(a[8].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[8].split("|")[3])
+        jj=str(a[9].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(a[9].split("|")[3])
+        msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
         update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
       elif len(Loxd)==4:
         keyboard=[[InlineKeyboardButton("GENERAR", callback_data='{}'.format(args))]]
@@ -846,27 +765,17 @@ def process(name,names,owner,bot_token):
         binf.append(Loxd[0])
         obj = Tools()
         a=obj.ccgenFromList(binf)
-        aa=str(a[0][0])+str(a[0][1])+str(a[0][2])+str(a[0][3])+str(a[0][4])+str(a[0][5])+str(a[0][6])+str(a[0][7])+str(a[0][8])+str(a[0][9])+str(a[0][10])+str(a[0][11])+str(a[0][12])+str(a[0][13])+str(a[0][14])+str(a[0][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        bb=str(a[1][0])+str(a[1][1])+str(a[1][2])+str(a[1][3])+str(a[1][4])+str(a[1][5])+str(a[1][6])+str(a[1][7])+str(a[1][8])+str(a[1][9])+str(a[1][10])+str(a[1][11])+str(a[1][12])+str(a[1][13])+str(a[1][14])+str(a[1][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        cc=str(a[2][0])+str(a[2][1])+str(a[2][2])+str(a[2][3])+str(a[2][4])+str(a[2][5])+str(a[2][6])+str(a[2][7])+str(a[2][8])+str(a[2][9])+str(a[2][10])+str(a[2][11])+str(a[2][12])+str(a[2][13])+str(a[2][14])+str(a[2][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        dd=str(a[3][0])+str(a[3][1])+str(a[3][2])+str(a[3][3])+str(a[3][4])+str(a[3][5])+str(a[3][6])+str(a[3][7])+str(a[3][8])+str(a[3][9])+str(a[3][10])+str(a[3][11])+str(a[3][12])+str(a[3][13])+str(a[3][14])+str(a[3][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        ee=str(a[4][0])+str(a[4][1])+str(a[4][2])+str(a[4][3])+str(a[4][4])+str(a[4][5])+str(a[4][6])+str(a[4][7])+str(a[4][8])+str(a[4][9])+str(a[4][10])+str(a[4][11])+str(a[4][12])+str(a[4][13])+str(a[4][14])+str(a[4][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        ff=str(a[5][0])+str(a[5][1])+str(a[5][2])+str(a[5][3])+str(a[5][4])+str(a[5][5])+str(a[5][6])+str(a[5][7])+str(a[5][8])+str(a[5][9])+str(a[5][10])+str(a[5][11])+str(a[5][12])+str(a[5][13])+str(a[5][14])+str(a[5][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        gg=str(a[6][0])+str(a[6][1])+str(a[6][2])+str(a[6][3])+str(a[6][4])+str(a[6][5])+str(a[6][6])+str(a[6][7])+str(a[6][8])+str(a[6][9])+str(a[6][10])+str(a[6][11])+str(a[6][12])+str(a[6][13])+str(a[6][14])+str(a[6][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        hh=str(a[7][0])+str(a[7][1])+str(a[7][2])+str(a[7][3])+str(a[7][4])+str(a[7][5])+str(a[7][6])+str(a[7][7])+str(a[7][8])+str(a[7][9])+str(a[7][10])+str(a[7][11])+str(a[7][12])+str(a[7][13])+str(a[7][14])+str(a[7][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        ii=str(a[8][0])+str(a[8][1])+str(a[8][2])+str(a[8][3])+str(a[8][4])+str(a[8][5])+str(a[8][6])+str(a[8][7])+str(a[8][8])+str(a[8][9])+str(a[8][10])+str(a[8][11])+str(a[8][12])+str(a[8][13])+str(a[8][14])+str(a[8][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        jj=str(a[9][0])+str(a[9][1])+str(a[9][2])+str(a[9][3])+str(a[9][4])+str(a[9][5])+str(a[9][6])+str(a[9][7])+str(a[9][8])+str(a[9][9])+str(a[9][10])+str(a[9][11])+str(a[9][12])+str(a[9][13])+str(a[9][14])+str(a[9][15])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
-        msg="""
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
+        aa=str(a[0].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        bb=str(a[1].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        cc=str(a[2].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        dd=str(a[3].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        ee=str(a[4].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        ff=str(a[5].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        gg=str(a[6].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        hh=str(a[7].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        ii=str(a[8].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        jj=str(a[9].split("|")[0])+"|"+str(Loxd[1])+"|"+str(Loxd[2])+"|"+str(Loxd[3])
+        msg="""\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>\nಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj)
         update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
       elif len(Loxd)>4:
         msg="<b>formato invalido</b>"
@@ -1045,6 +954,10 @@ def process(name,names,owner,bot_token):
     update.message.reply_text(msg,parse_mode='MarkdownV2')
   def extrap(update,context):
     user = update.message.from_user.username
+    if user==None:
+    	user=update.message.from_user.first_name
+    else:
+    	user="@"+str(user)
     args=context.args
     if len(args)>0:
       if len(args)==1:
@@ -1076,9 +989,12 @@ def process(name,names,owner,bot_token):
             mult5=int(cc1[4])*int(cc1[5])
             mult6=int(cc1[5])*int(cc1[6])
             mult7=int(cc1[6])*int(cc1[7])
-            cc2=str(cc1[0])+str(cc1[1])+str(cc1[2])+str(cc1[3])+str(cc1[4])+str(cc1[5])+str(cc1[6])+str(cc1[7])+str(int(mult1))+str(int(mult2))+str(int(mult3))+str(int(mult4))+str(int(mult5))+str(int(mult6))+str(int(mult7))
+            mult6=int(cc1[7])*int(cc1[8])
+            cc2=str(cc1[0])+str(cc1[1])+str(cc1[2])+str(cc1[3])+str(cc1[4])+str(cc1[5])+str(cc1[6])+str(cc1[7])+str(int(mult1))+str(int(mult2))+str(int(mult3))+str(int(mult4))+str(int(mult5))+str(int(mult6))+str(int(mult7))+str(int(mult8))
+            print(cc2)
             a=0
             osd=list()
+            print(len(cc2))
             for i in cc1:
               if i == cc2[a]:
                 osd.append(i)
@@ -1096,7 +1012,7 @@ def process(name,names,owner,bot_token):
 *BY :* `{}`""".format(res_one,res_two,user)
             update.message.reply_text(msg,parse_mode='MarkdownV2')
           else:
-            keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}'.format(args[0]))]]
+            keyboard=[[InlineKeyboardButton("VOLVER A EXTRAPOLAR", callback_data='k|{}|{}'.format(args[0],user))]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             extras=[]
             obj = Tools()
@@ -1146,7 +1062,9 @@ def process(name,names,owner,bot_token):
 ಠ-> <code>{}</code>
 ಠ-> <code>{}</code>
 ಠ-> <code>{}</code>
-ಠ-> <code>{}</code>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj,user)
+ಠ-> <code>{}</code>
+
+ಠ-> BY: <b>{}</b>""".format(aa,bb,cc,dd,ee,ff,gg,hh,ii,jj,user)
             update.message.reply_text(msg,reply_markup=reply_markup,parse_mode='HTML')
         elif len(args[0])==15:
           cc=str(args[0])
@@ -1323,9 +1241,17 @@ def process(name,names,owner,bot_token):
       msg="`{}` *Debes usar el comando acompañado de una o dos cc's, lives o bins generados*".format(user)
       update.message.reply_text(msg,parse_mode='MarkdownV2')
   def info(update,context):
-  	user = update.message.from_user.username
-  	first_name=update.message.from_user.first_name
-  	msg="""
+    sistema = platform.system()
+    url="https://api.ipify.org?format=json"
+    start=datetime.datetime.now()
+    res=requests.get(url=url,timeout=5)
+    if res.status_code==200:
+      end=datetime.datetime.now()
+      raw_speed=str(end-start).split('.')[1]
+      speed_int=round(int(raw_speed),2)
+      speed=round(speed_int/1000)
+      speed=str(speed)+"ms"
+    msg="""
 <b>NOMBRE DEL BOT : </b><u><i>{}</i></u>
 
 <b>Version : </b><u><i>BETA</i></u>
@@ -1334,12 +1260,12 @@ def process(name,names,owner,bot_token):
 
 <b>OWNER : </b><u><i>{}</i></u>
 
-<b>USER : </b><u><i>{}</i></u>
+<b>SYSTEM : </b><u><i>{}</i></u>
 
-<b>FIRST NAME : </b><u><i>{}</i></u>
+<b>SPEEDTEST : </b><u><i>{}</i></u>
 
-<b>GRACIAS POR USAR EL BOT</b>""".format(names,owner,user,first_name)
-  	update.message.reply_text(msg,parse_mode="HTML")
+<b>GRACIAS POR USAR EL BOT</b>""".format(names,owner,sistema,speed)
+    update.message.reply_text(msg,parse_mode="HTML")
   def crearB(update,context):
     user = update.message.from_user.username
     args=context.args
@@ -1574,8 +1500,6 @@ BIENVENIDO MI PANA {}""".format(username)
 <pre>pre-formatted fixed-width code block</pre>
 <pre><code class="language-python">pre-formatted fixed-width code block written in the Python programming language</code></pre>"""
     update.message.reply_text(msg,parse_mode="HTML")
-  def dork(update,context):
-    pass
   dispatcher.add_handler(CommandHandler("insultar_a",insultar_a))
   dispatcher.add_handler(CommandHandler("simp",simp))
   dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,WelcomeMSG))
